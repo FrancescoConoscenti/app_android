@@ -26,7 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-     String url;
+     String url,datot;
      String [] inizio;
      String [] orario;
      TextView tw;
@@ -34,10 +34,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        inizio=new String [200];
-        orario=new String [200];
+        inizio=new String [300];
+        orario=new String [300];
         url="https://corsi.unibo.it/laurea/ElettronicaTelecomunicazioni/orario-lezioni/@@orario_reale_json?anno=3&curricula=995-000";
-        tw=(TextView) findViewById(R.id.textView);
+        tw=(TextView) findViewById(R.id.textView1);
+        open_request();
     }
 
     public void open_menu(View view) {
@@ -45,28 +46,34 @@ public class MainActivity extends AppCompatActivity {
         open_request();
         Intent intent=new Intent(this,MenuActivity.class);
         startActivity(intent);
+
     }
 
     public void open_request() {
         // Instantiate the RequestQueue.
+        tw.append("open");
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, url, null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, url,
                new Response.Listener<JSONArray>() {
                    @Override
                    public void onResponse(JSONArray response) {
+                       int i,j;
+                       tw.append("  on+");
                        try{
-                       for (int i=0;i<response.length();i++)
+                       for (j=0, i=0;i<response.length();i++)
                        {
-
+                           tw.append("for");
 
                            JSONObject datoO=response.getJSONObject(i);
 
-                            inizio[i]= datoO.getString("start");
+                           //  datot= datoO.getString("start");
+                            inizio[i]= datoO.getString("start");;
                             orario[i]= datoO.getString("time");
                             tw.append(inizio[i]);
-
+                          // j++;
                        }
                        } catch (JSONException e) {
+                           tw.append("errore volley");
                            e.printStackTrace();
                        }
                    }
@@ -87,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 }*/, new Response.ErrorListener() {
            @Override
            public void onErrorResponse(VolleyError error) {
-
+               tw.append("errore volley");
 
            }
        });
